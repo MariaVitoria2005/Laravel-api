@@ -13,11 +13,11 @@ class OrdemServicoController extends Controller
      */
     public function index()
     {
-        $ordemservico = OrdemServico::with('Cliente','Servico')->get();
+        $ordemservicos = OrdemServico::with('Cliente','Servico')->get();
 
         return response()->json([
             'status'=> true,
-            'ordemservico'=> $ordemservico
+            'ordemservicos'=> $ordemservicos
         ]);
     }
 
@@ -39,7 +39,7 @@ class OrdemServicoController extends Controller
         return response()->json([
             'status' => true,
             'messagem' => "OrdemServico Criado com sucesso!",
-            'ordemservico' => $ordemservico,
+            'ordemservicos' => $ordemservico,
         ],200);
     }
 
@@ -56,7 +56,7 @@ class OrdemServicoController extends Controller
 
         return response()->json([
             'status' => true,
-            'ordemservico' => $ordemservico
+            'ordemservicos' => $ordemservico
         ]); 
     }
 
@@ -73,9 +73,9 @@ class OrdemServicoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $ordemservico = OrdemServico::find($id);
+        $ordemservicos = OrdemServico::find($id);
 
-        if (!$ordemservico){
+        if (!$ordemservicos){
             return response()->json(['message' => 'OrdemServico não encontrado'],404);
         }
 
@@ -88,12 +88,12 @@ class OrdemServicoController extends Controller
             return response()->json(['erros' => $validator->erros()],422);
         }
 
-        $ordemservico->update($request->all());
+        $ordemservicos->update($request->all());
 
         return response()->json([
             'status' => true,
             'message' => 'OrdemServico atualizado com sucesso!',
-            'ordemservico' => $ordemservico
+            'ordemservicos' => $ordemservicos
         ],200);
     }
 

@@ -13,11 +13,11 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        $cliente = Cliente::all();
+        $clientes = Cliente::all();
 
         return response()->json([
             'status' => true,
-            'cliente' => $cliente
+            'clientes' => $clientes
         ]); 
     }
 
@@ -34,12 +34,33 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        $cliente = Cliente::create($request->all());
+        // $cliente = Cliente::create($request->all());
+
+        // return response()->json([
+        //     'status' => true,
+        //     'message' => "Cliente Criado com sucesso!",
+        //     'cliente' => $cliente
+        // ], 200);
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'data_nascimento' => 'required|date',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validação da imagem
+        ]);
+
+        // Armazenar a foto
+        $foto_camimho = $request->file('foto')->store('fotos', 'public');
+
+        // Criar o cliente com o caminho da foto
+        $clientes = Cliente::create([
+            'nome' => $request->input('nome'),
+            'data_nascimento' => $request->input('data_nascimento'),
+            'foto' => $request->file(),
+        ]);
 
         return response()->json([
             'status' => true,
-            'message' => "Cliente Criado com sucesso!",
-            'cliente' => $cliente
+            'message' => "Cliente Cadastrado com sucesso!",
+            'clientes' => $clientes
         ], 200);
     }
 
@@ -48,15 +69,15 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        $cliente = Cliente::find($id);
+        $clientes = Cliente::find($id);
 
-        if (!$cliente){
+        if (!$clientes){
             return response()->json(['message' => 'Cliente não encontrado'],404);
         }
 
         return response()->json([
             'status' => true,
-            'cliente' => $cliente
+            'clientes' => $clientes
         ]);
     }
 
@@ -73,9 +94,9 @@ class ClienteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cliente= Cliente::find($id);
+        $clientes = Cliente::find($id);
 
-        if (!$cliente){
+        if (!$clientes){
             return response()->json(['message' => 'Cliente não encontrado'],404);
         }
 
@@ -88,12 +109,12 @@ class ClienteController extends Controller
             return response()->json(['erros' => $validator->erros()],422);
         }
 
-        $cliente->update($request->all());
+        $clientes ->update($request->all());
 
         return response()->json([
             'status' => true,
             'message' => 'Cliente atualizado com sucesso!',
-            'cliente' => $cliente
+            'clientes' => $clientes
         ],200);
     }
 
@@ -102,12 +123,12 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        $cliente = Cliente::find($id);
-        if (!$cliente){
+        $clientes = Cliente::find($id);
+        if (!$clientes){
             return response()->json(['message' => 'Cliente não encontrado'],404);
         }
     
-        $cliente->delete();
+        $clientes ->delete();
         return response()->json(['message' => 'Cliente removido com sucesso']);
     }
 }
